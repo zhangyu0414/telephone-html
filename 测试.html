@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+  <head>
+  <meta charset="UTF-8">
+  <title>
+  </title>
+  </head>
+  <body>
+	<div id="startsbox" class="container" style="display: block; position:absolute;">
+		  <div class="text-center">
+			<canvas id='starts' width='1903' height='821'></canvas>
+		  </div>
+		</div>
+	<script>
+	function dostarts(){
+    var canvas = document.getElementById('starts');
+    var ctx = canvas.getContext('2d');
+    //定义星星
+    function produtStart(x,y){
+        if(!x&&!y){
+            var x = Math.random()*canvas.width;
+            var y = Math.random()*canvas.height;
+        }
+        var directionX = Math.random()>0.4?1:(-1),directionY = Math.random()>0.4?1:(-1);
+        var addX = parseFloat(Math.random()*0.3+0.01).toFixed(2);
+        var addY = parseFloat(Math.random()*0.3+0.01).toFixed(2);
+        var rad = parseFloat(Math.random()*3+0.5).toFixed(2);
+        var color = rgb();//'rgb(255,255,255)'
+        var start = {
+            'x':x,
+            'y':y,
+            'directionX':directionX,
+            'directionY':directionY,
+            'addX':addX,
+            'addY':addY,
+            'rad':rad,
+            'color':color
+        };
+        return start;
+    }
+    //定义星星群
+    var slen = 199;//parseInt(Math.random()*50+80);
+    var starts = new Array(slen);
+    for(var i=0;i<slen;i++){
+        var start =  produtStart();
+        starts[i] = start;
+    }
+    //更新画布
+    function update(){
+        ctx.beginPath();
+		img=new Image();
+		img.src='images/img_75f5025a_stars_bg.png';
+		var ptrn=ctx.createPattern(img,'repeat');
+        ctx.fillStyle =ptrn//'rgba(000,000,000,0.41)';
+        ctx.rect(0,0,canvas.width,canvas.height);
+        ctx.closePath();
+        ctx.fill();//背景图*/
+		
+		/*txc.fillStyle=ptrn;
+		txc.fillRect(0,0,canvas.width,canvas.height);*/
+
+        for(var i=0;i<starts.length;i++){
+            var s =starts[i];
+            ctx.fillStyle = s.color;
+
+            ctx.beginPath();
+            if(s.x>=canvas.width+ s.rad*3){
+                s.directionX = -1;
+            }else if(s.x<=(-10)){
+                s.directionX = 1;
+            }
+            if(s.y>=canvas.height+ s.rad*3){
+                s.directionY = -1;
+            }else if(s.y<=(-10)){
+                s.directionY = 1;
+            }
+            s.x += s.addX* s.directionX;
+            s.y += s.addY* s.directionY ;
+            ctx.arc(s.x,s.y, s.rad,0,Math.PI*2,true);
+            ctx.closePath();
+            ctx.fill();//绘制星星
+        }//绘制星星
+        //绘制连线
+        for(var i=0;i<starts.length;i++){
+            for (var j=0;j<starts.length;j++) {
+                var rad = Math.sqrt(Math.pow((starts[j].x - starts[i].x), 2)+Math.pow((starts[i].y - starts[j].y), 2));
+                if (rad <= 120
+                    &&(Math.abs((starts[i].x - starts[j].x))<120)
+                    &&(Math.abs((starts[i].y - starts[j].y))<120)) {
+                    ctx.beginPath();
+                    var liwidth = rad / 850;
+                    if(rad>=50){liwidth = 4 / rad;}
+                    if(rad>=70){liwidth = 3 / rad;}
+                    if(rad>=90){liwidth = 0.1 / rad;}
+                    ctx.lineWidth = liwidth;
+                    var o = 50 / rad ;
+                    ctx.strokeStyle = 'rgba(255,255,255,' + o + ')';//rgb();
+                    ctx.moveTo(starts[j].x, starts[j].y);
+                    ctx.lineTo(starts[i].x, starts[i].y);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+    //调用定时器，星星动起来
+    var timer = setInterval(update,20);
+
+    //鼠标点击添加星星事件
+    canvas.onclick = function(e){
+        start = produtStart(e.offsetX, e.offsetY);
+        starts[starts.length] = start;
+    }
+    function rgb(){
+        var r =250 //parseInt(Math.random()*185+70);
+        var g =250 //parseInt(Math.random()*185+70);
+        var b =250 //parseInt(Math.random()*185+70);
+        //var a = Math.random();
+        return  `rgb(${r},${g},${b})`;
+    }
+}
+dostarts();
+	</script>
+  </body>
+ </html>

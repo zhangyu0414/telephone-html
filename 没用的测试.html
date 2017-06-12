@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+  <head>
+  <meta charset="UTF-8">
+  <title>
+  </title>
+  <style type="text/css">
+  body{
+	overflow:hidden;
+  }
+.bg {
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+.bg>div {
+    /*background:url('images/323e76f1566b0a3bdfc90e6d86.jpg') no-repeat 50% 0;*/
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+	opacity: 1;
+}
+
+.bg-move {
+	opacity: ;
+    transition: transform 0.4s, opacity 0s 0.5s;
+	background:url('images/323e76f1566b0a3bdfc90e6d86.jpg') no-repeat 50% 0;
+}
+
+  </style>
+  </head>
+  <body>
+	<div class="bg">
+        <div class="bg-static"></div>
+        <div class="bg-move" style="transform: perspective(1000px) translate3d(-7.71875px, -2.17297px, -10.8649px) rotate3d(0.217297, -0.771875, 0, 2deg);"></div>
+        <div class="bg-small"></div>
+    </div>
+	<script src='jquery-1.11.1.js'></script>
+  <script type="text/javascript">
+	//背景伪3D效果开始
+    var bg_3D_move = $(".bg-move"), //背景3D层
+        canMoveHeroImage = true,
+        win = { width: window.innerWidth, height:window.innerHeight };
+    //节流函数
+    function throttle(fn, delay) {
+        var allowSample = true;
+        return function(e) {
+            if (allowSample) {
+                allowSample = false;
+                setTimeout(function() { allowSample = true; }, delay);
+                fn(e);
+            }
+        };
+    }
+    //伪3D函数
+    window.addEventListener('mousemove', throttle(function(ev) {
+        if( !canMoveHeroImage ) return false;
+        var xVal = -1/(win.height/2)*ev.clientY + 1,
+            yVal = 1/(win.width/2)*ev.clientX - 1,
+            transX = 20/(win.width)*ev.clientX - 10,
+            transY = 20/(win.height)*ev.clientY - 10,
+            transZ = 100/(win.height)*ev.clientY - 50;
+
+        bg_3D_move[0].style.transform = 'perspective(1000px) translate3d(' + transX + 'px,' + transY + 'px,' + transZ + 'px) rotate3d(' + xVal + ',' + yVal + ',0,2deg)';
+    }, 100));
+  </script>
+  </body>
+ </html>
